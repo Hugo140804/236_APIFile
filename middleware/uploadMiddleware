@@ -23,3 +23,5 @@ const fileFilter = (req, file, cb) => {
         cb(new Error('Only images are allowed (jpeg, jpg, png)'));
     }
 };
+
+const upload = multer({
