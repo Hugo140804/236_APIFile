@@ -41,9 +41,11 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         komik.belongsToMany(models.Genre, {
-            foreignKey: 'genre_id',
-            through: 'komik_id',
+            foreignKey: 'komik_id',
+            through: 'komik_genres', // Fixed: should be a junction table name
             as: 'genre',
         });
     }
+
+    return komik; // Fixed: added missing return statement
 };

@@ -28,36 +28,38 @@ async function getKomikById(req, res) {
 
 // CREATE new komik
 async function createKomik(req, res) {
-    const { title, description, author } = req.body;
+    const { judul, sinopsis, tahun_terbit, penulis_id, genre_id } = req.body;
 
-    if (!title) {
-        return res.status(400).json({ error: 'Title is required' });
+    if (!judul) {
+        return res.status(400).json({ error: 'Judul is required' });
     }
 
     try {
-        const newKomik = await Komik.create({ title, description, author });
-        res.status(201).json(newKomik);
+        const gambar = req.file ? req.file.filename : null;
+
+        const newKomik = await Komik.create({
+            judul,
+            sinopsis,
+            tahun_terbit,
+            penulis_id,
+            genre_id,
+            gambar
+        });
+
+        res.status(201).json({
+            message: 'Komik berhasil ditambahkan',
+            data: newKomik
+        });
     } catch (err) {
         console.error('Error creating komik:', err.message);
         res.status(500).json({ error: 'Internal server error' });
     }
-
-    const gambar = req.file ? req.file.filename : null;
-
-    const komik = await Komik.create({
-        judul,
-        sinopsis,
-        tahun_terbit,
-        penulis_id,
-        genre_id,
-        gambar
-    });
 }
 
 // UPDATE komik
 async function updateKomik(req, res) {
     const { id } = req.params;
-    const { title, description, author } = req.body;
+    const { judul, sinopsis, tahun_terbit, penulis_id, genre_id } = req.body;
 
     try {
         const komik = await Komik.findByPk(id);
@@ -65,13 +67,21 @@ async function updateKomik(req, res) {
             return res.status(404).json({ error: 'Komik not found' });
         }
 
+        const gambar = req.file ? req.file.filename : komik.gambar;
+
         await komik.update({
-            title: title ?? komik.title,
-            description: description ?? komik.description,
-            author: author ?? komik.author
+            judul: judul ?? komik.judul,
+            sinopsis: sinopsis ?? komik.sinopsis,
+            tahun_terbit: tahun_terbit ?? komik.tahun_terbit,
+            penulis_id: penulis_id ?? komik.penulis_id,
+            genre_id: genre_id ?? komik.genre_id,
+            gambar: gambar
         });
 
-        res.status(200).json(komik);
+        res.status(200).json({
+            message: 'Komik berhasil diupdate',
+            data: komik
+        });
     } catch (err) {
         console.error('Error updating komik:', err.message);
         res.status(500).json({ error: 'Internal server error' });

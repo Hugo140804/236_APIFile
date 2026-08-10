@@ -3,19 +3,20 @@ const router = express.Router();
 
 const komikController = require("../controller/komikController");
 const genreController = require("../controller/genreController");
-const userController = require("../controller/userController");
+const penulisController = require("../controller/penulisController"); // Changed from userController
 const authMiddleware = require("../middleware/authMiddleware");
+const uploadMiddleware = require("../middleware/uploadMiddleware");
 
-router.post("/register", userController.register);
-router.post("/login", userController.login);
+router.post("/register", penulisController.register); // Ensure register/login exist in penulisController
+router.post("/login", penulisController.login);
 
 // Public - Komik
 router.get("/komik", komikController.getAllKomik);
 router.get("/komik/:id", komikController.getKomikById);
 
 // Protected - Komik
-router.post("/komik", authMiddleware, komikController.createKomik);
-router.put("/komik/:id", authMiddleware, komikController.updateKomik);
+router.post("/komik", authMiddleware, uploadMiddleware.single('gambar'), komikController.createKomik);
+router.put("/komik/:id", authMiddleware, uploadMiddleware.single('gambar'), komikController.updateKomik);
 router.delete("/komik/:id", authMiddleware, komikController.deleteKomik);
 
 // Public - Genre

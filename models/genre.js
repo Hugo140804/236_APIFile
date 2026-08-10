@@ -22,11 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     Genre.associate = (models) => {
         Genre.belongsToMany(models.Komik, {
             foreignKey: 'genre_id',
-            through: 'komik_id',
+            through: 'komik_genres', // Fixed: should match the junction table name
             as: 'komik',
         });
     }
     return Genre;
 };
-
-    
