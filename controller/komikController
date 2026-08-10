@@ -41,6 +41,17 @@ async function createKomik(req, res) {
         console.error('Error creating komik:', err.message);
         res.status(500).json({ error: 'Internal server error' });
     }
+
+    const gambar = req.file ? req.file.filename : null;
+
+    const komik = await Komik.create({
+        judul,
+        sinopsis,
+        tahun_terbit,
+        penulis_id,
+        genre_id,
+        gambar
+    });
 }
 
 // UPDATE komik
